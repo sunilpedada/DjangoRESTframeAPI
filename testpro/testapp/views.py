@@ -4,10 +4,13 @@ import io
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 from.models import EmployeDetails
-from.serializing import EmployeSerializer
+from.serializing import EmployeSerializer,testserializer
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
+from rest_framework.response import Response
 # Create your views here.
 #Note:cmd:pip freeze>requirements.txt(for write required softwars) 
 # cmd: type requirements.txt (to read )
@@ -60,3 +63,40 @@ class employees(View):
         msg={"msg":"record deleted"}
         json_dump=JSONRenderer().render(msg)
         return HttpResponse(json_dump,content_type="application/json",status=200)
+
+# #/////////////////// DRFviews => APIView ////////////////////////////////////
+class testAPIView(APIView):
+    def get(self,request,*args,**kwargs):
+        data={"name":"sunil","no":420}
+        return Response(data,status=200)
+    def post(self,request,*args,**kwargs):
+        serialized_data=testserializer(data=request.data)
+        if serialized_data.is_valid():
+            get_name=serialized_data.data.get("name")
+            msg="hello {} welcome to drf".format(get_name)
+            return Response(msg,status=200)
+        return Response(serialized_data.errors,status=400)
+    def put(self,request,*args,**kwargs):
+        data={"name":"sunil","no":420}
+        return Response(data,status=200)
+    def patch(self,request,*args,**kwargs):
+        data={"name":"sunil","no":420}
+        return Response(data,status=200)
+    def delete(self,request,*args,**kwargs):
+        data={"name":"sunil","no":420}
+        return Response(data,status=200)
+
+# class testAPIView(APIView):
+#     def get(self,request,format=None):
+#         data=EmployeDetails.objects.all()
+#         serialized=EmployeSerializer(data,many=True)
+#         return Response(serialized.data,status=200)
+
+# /////////////////////////////////////////////////////////////////////////
+# class testViewset(ViewSet):
+#     def list():
+#     def retrieve():
+#     def create():
+#     def update():
+#     def partial_update():
+#     def destroy():
